@@ -5,33 +5,44 @@ var app = express();
 app.get('/', function (req, res) {
    res.send('Hello World');
 });
-app.post('/', async function(req, res){
-  // console.log(req.query);
-  // console.log(req.params);
-  // console.log(req.);
 
-  res.json(req.query);
-});
-
+/** GET user information by username and password */
 app.get('/user', function (req, res){
-  var id = req.query.id;
+  const id = req.params.id;
   connection.query('SELECT * FROM tbl_user WHERE id=?',[id], function (error, results, fields) {
     res.send(results)
   })
 })
 
-app.post('/create', async function (req, res){
-  var username = req.query.username;
-  var password = req.query.password;
-  // res.send(username);
-  connection.query('Insert into tbl_user(`username`, `password`) values(?,?)',[username, password],function (error, results, fields) {
-    res.send(results)
-  });
-  var user = await connection.query('SELECT * FROM tbl_user where id = 1', function (error, results, fields) {
-    res.send(results)
-  });
-  // res.json(JSON.stringify(user));
-  // res.send(user);
+/** GET login */
+app.get('/login', function (req, res){
+  const username = req.params.username;
+  const password = req.params.password;
+  connection.query('SELECT * FROM tbl_user WHERE username=? AND password=?',[username, password], function (error, results, fields) {
+    if (results) {
+      res.send(results);
+    } 
+    else {
+      res.send("Không tìm thấy user");
+    }
+  })
+})
+
+/** POST register user */
+app.post('/register', async function (req, res){
+  const username = req.params.username;
+  const password = req.params.password;
+  const age = req.params.age;
+  const country = req.params.country;
+  const date_of_birth = req.params.date_of_birth;
+  
+  console.log(req.params);
+  connection.query('INSERT INTO tbl_user(`username`, `password`, `age`, `country`, `date_of_birth`) values(?, ?, ?, ?, ?)',
+    [username, password, age, country, date_of_birth],
+    function (error, results, fields) {
+      res.send(results);
+    }
+  );
 });
 
 var server = app.listen(3000, function () {
