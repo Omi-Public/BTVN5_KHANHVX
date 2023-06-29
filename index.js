@@ -1,4 +1,5 @@
-const {connection} = require('./db');
+const {connection} = require('./db.js');
+const md5 = require('md5');
 var express = require('express');
 var app = express();
 
@@ -8,16 +9,17 @@ app.get('/', function (req, res) {
 
 /** GET user information by username and password */
 app.get('/user', function (req, res){
-  const id = req.params.id;
+  const id = req.query.id;
+  console.log(connection);
   connection.query('SELECT * FROM tbl_user WHERE id=?',[id], function (error, results, fields) {
-    res.send(results)
+    res.send(results);
   })
 })
 
 /** GET login */
 app.get('/login', function (req, res){
   const username = req.params.username;
-  const password = req.params.password;
+  const password = md5(req.params.password);
   connection.query('SELECT * FROM tbl_user WHERE username=? AND password=?',[username, password], function (error, results, fields) {
     if (results) {
       res.send(results);
@@ -31,7 +33,7 @@ app.get('/login', function (req, res){
 /** POST register user */
 app.post('/register', async function (req, res){
   const username = req.params.username;
-  const password = req.params.password;
+  const password = md5(req.params.password);
   const age = req.params.age;
   const country = req.params.country;
   const date_of_birth = req.params.date_of_birth;

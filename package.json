@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Omi-Public/BTVN5_KHANHVX#readme",
   "dependencies": {
     "express": "^4.18.2",
+    "md5": "^2.3.0",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.22"
   }
